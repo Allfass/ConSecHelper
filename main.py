@@ -77,11 +77,14 @@ if __name__ == '__main__':
 
     # Этап внесения изменений в конфигурацию Dockerfile
     # Считывание директории с файлом
+    path_to_dockerfile = ''
     for i in sys.argv:
         path_to_dockerfile = i[1]
 
-
-    with open("sample.txt", "r") as file1:
+    with open(path_to_dockerfile, "rw") as file1:
+        if file1.readline().find('FROM') == -1:
+            print('Это не dockerfile')
+            exit(-2)
         # итерация по строкам
         for line in file1:
             print(line.strip())
