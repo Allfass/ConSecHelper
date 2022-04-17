@@ -1,6 +1,19 @@
 import subprocess
 import sys
 import os
+import json
+
+
+# Этап проверки образа для инструкции FROM из Dockerfile
+def from_stage(docker_image):
+    subprocess.call(["curl", "https://static.snyk.io/cli/latest/snyk-linux", "-o", "snyk"])
+    subprocess.call(["chmod", "+x", "./snyk"])
+    subprocess.call(["./snyk", "auth"])
+    call_container_test = subprocess.run(["./snyk", "container", "test", docker_image,
+                                          "--severity-threshold=high", "--json"], stdout=subprocess.PIPE, text=True)
+    data = json.loads(call_container_test.stdout)
+    if data["summary"] == 'No high or critical severity vulnerabilities':
+        print(docker_image, 'проверен и получен из надежного источника')
 
 
 # Функция для создание файла с настройками работы auditd
