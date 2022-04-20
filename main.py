@@ -12,8 +12,30 @@ def from_stage(docker_image):
     call_container_test = subprocess.run(["./snyk", "container", "test", docker_image,
                                           "--severity-threshold=high", "--json"], stdout=subprocess.PIPE, text=True)
     data = json.loads(call_container_test.stdout)
-    if data["summary"] == 'No high or critical severity vulnerabilities':
+    if data.get('summary') == 'No high or critical severity vulnerabilities':
         print(docker_image, 'проверен и получен из надежного источника')
+        return docker_image
+    else:
+        # Формирование отчета по уязвимостям
+        report = open("report_" + docker_image + ".txt", "w")
+        report.write(data)
+        report.close()
+        # Формирование образа на замену уязвимому
+        buffer_message = ''
+        counter = 1
+        for item in data['docker']['baseImageRemediation']['advice']:
+            if counter == 0:
+                buffer_message = item['message']
+            if item['message'] == 'Major upgrades':
+                counter = 0
+        second_buffer = buffer_message.split('\n')
+        third_buffer = second_buffer[1].split(' ')
+        recommended_image = third_buffer[0]
+        print(recommended_image)
+        return recommended_image
+
+
+
 
 
 # Функция для создание файла с настройками работы auditd
@@ -64,6 +86,7 @@ if __name__ == '__main__':
             break
         else:
             docker_username = input('Введите имя существующего пользователя, который будет работать с контейнерами:')
+
             # Проверка наличия пользователя в системе
             user_list_call = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], stdout=subprocess.PIPE, text=True)
             print(user_list_call.stdout.find(docker_username))
@@ -83,12 +106,16 @@ if __name__ == '__main__':
     else:
         print('auditd уже установлен')
         auditd()
+
     # Этап проверки конфигурации контейнеров
-    #
+    # Скачивание бенчмарка безопасности
     subprocess.call(["git", "clone",
-                     "https://github.com/docker/docker-bench-security.git"])  # скачивание бенчмарка безопасности
+                     "https://github.com/docker/docker-bench-security.git"])
 
     # Этап внесения изменений в конфигурацию Dockerfile
+    # Создание нового dockerfile
+    new_dockerfile = open('Dockerfile.new', 'w')
+
     # Считывание директории с файлом
     path_to_dockerfile = ''
     for i in sys.argv:
@@ -98,6 +125,7 @@ if __name__ == '__main__':
         if file1.readline().find('FROM') == -1:
             print('Это не dockerfile')
             exit(-2)
+
         # итерация по строкам
         for line in file1:
             print(line.strip())
