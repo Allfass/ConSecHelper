@@ -35,9 +35,6 @@ def from_stage(docker_image):
         return recommended_image
 
 
-
-
-
 # Функция для создание файла с настройками работы auditd
 def audit_config():
     auditd_config_file = open('audit.rules', 'w')
@@ -107,25 +104,24 @@ if __name__ == '__main__':
         print('auditd уже установлен')
         auditd()
 
-    # Этап проверки конфигурации контейнеров
-    # Скачивание бенчмарка безопасности
-    subprocess.call(["git", "clone",
-                     "https://github.com/docker/docker-bench-security.git"])
-
     # Этап внесения изменений в конфигурацию Dockerfile
     # Создание нового dockerfile
     new_dockerfile = open('Dockerfile.new', 'w')
 
-    # Считывание директории с файлом
+    # Считывание директории с файлом и проверка на наличие аргумента
     path_to_dockerfile = ''
-    for i in sys.argv:
-        path_to_dockerfile = i[1]
+    try:
+        path_to_dockerfile = sys.argv[1]
+    except IndexError:
+        print('Отсутствует аргумент с путем к файлу docker')
 
-    with open(path_to_dockerfile, "rw") as file1:
+    # проверка на наличие первого оператора в файле
+    with open(path_to_dockerfile, "r") as file1:
         if file1.readline().find('FROM') == -1:
             print('Это не dockerfile')
             exit(-2)
 
         # итерация по строкам
+        file1.seek(0)
         for line in file1:
             print(line.strip())
