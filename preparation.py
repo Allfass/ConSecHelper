@@ -1,9 +1,13 @@
 import subprocess
 import os
-
+import debug
 
 # Функция для создание файла с настройками работы auditd
+
+
 def audit_config():
+    if debug.DEBUG:
+        print('[DEBUG]_Внесение изменений в конфигурационный файл auditd')
     auditd_config_file = open('audit.rules', 'w')
     auditd_config_file.write("""
                 auditctl -w /usr/bin/dockerd -p rwxa -k docker
@@ -38,36 +42,39 @@ def auditd():
         audit_config()
 
 
-def docker_user():
+def docker_preparation():
     # Этап подготовки хоста к генерации файла
     # Создание/получение имени нового пользователя
     while True:
-        docker_username = ''
         choice_username = input('Вы хотите создать нового пользователя, для взаимодействия с контейнерами(Yes/No)?:')
         if choice_username[0] == 'Y' or choice_username[0] == 'y':
             docker_username = input('Введите имя пользователя docker?:')
             subprocess.call(["useradd", "-c", docker_username, "-m", "-c", "/bin/bash", docker_username])
+            subprocess.call(["usermod", "-aG", "sudo", docker_username])
+            subprocess.call(["usermod", "-aG", "docker", docker_username])
             break
         else:
             docker_username = input('Введите имя существующего пользователя, который будет работать с контейнерами:')
-
+            if debug.DEBUG:
+                print('[DEBUG][DOCKER_USERNAME]-', docker_username)
             # Проверка наличия пользователя в системе
             user_list_call = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], stdout=subprocess.PIPE, text=True)
-            print(user_list_call.stdout.find(docker_username))
             if user_list_call.stdout.find(docker_username) >= 0:
+                if debug.DEBUG:
+                    print('[DEBUG]Сработало условие, пользователь существует в списке пользователей')
+                subprocess.call(["usermod", "-aG", "sudo", docker_username])
+                subprocess.call(["usermod", "-aG", "docker", docker_username])
                 break
-    subprocess.call(["usermod", "-aG", "sudo", docker_username])
-    subprocess.call(["usermod", "-aG", "docker", docker_username])
-
-
-# установка и конфигурация auditd
-call = subprocess.run(["dpkg", "-l"], stdout=subprocess.PIPE, text=True)
-if call.stdout.find('auditd') < 0:
-    user_choice = input('Вы хотите использовать auditd для контроля вызовов(Да/Нет)?')
-    if user_choice[0] == 'Y' or user_choice[0] == 'y':
-        subprocess.run(["apt", "update"])
-        subprocess.run(["apt", "install", "auditd", "-y"])
+    # установка и конфигурация auditd
+    call = subprocess.run(["dpkg", "-l"], stdout=subprocess.PIPE, text=True)
+    if call.stdout.find('auditd') < 0:
+        user_choice = input('Вы хотите использовать auditd для контроля вызовов(Да/Нет)?')
+        if user_choice[0] == 'Y' or user_choice[0] == 'y':
+            if debug.DEBUG:
+                print('[DEBUG]_Установка auditd')
+            subprocess.run(["apt", "update"])
+            subprocess.run(["apt", "install", "auditd", "-y"])
+            auditd()
+    else:
+        print('auditd уже установлен')
         auditd()
-else:
-    print('auditd уже установлен')
-    auditd()
