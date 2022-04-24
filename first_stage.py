@@ -7,6 +7,7 @@ import json
 def from_stage(string, dockerfile):
     # Работа со строкой
     docker_image = string[1]
+    docker_image = docker_image.replace('\n', '')
     if debug.DEBUG:
         print('[DEBUG]', docker_image)
     # Скачивание snyk для linux - инструмент для анализа завимимостей
@@ -20,11 +21,11 @@ def from_stage(string, dockerfile):
     if data.get('summary') == 'No high or critical severity vulnerabilities':
         print(docker_image, 'проверен и получен из надежного источника')
         # Запись в новый Dockerfile: FROM + старый образ
-        dockerfile.write('FROM ', docker_image, '\n')
+        dockerfile.write(f'FROM {docker_image}\n')
     else:
         # Формирование отчета по уязвимостям
-        report = open("report_" + docker_image + ".txt", "w")
-        report.write(data)
+        report = open('report_' + docker_image, "a")
+        report.write(json.dumps(data))
         report.close()
         # Формирование образа на замену уязвимому
         buffer_message = ''
@@ -37,6 +38,7 @@ def from_stage(string, dockerfile):
         second_buffer = buffer_message.split('\n')
         third_buffer = second_buffer[1].split(' ')
         recommended_image = third_buffer[0]
-        print(recommended_image)
+        if debug.DEBUG:
+            print('[DEBUG][recommended_image]_', recommended_image)
         # Запись в новый Dockerfile: FROM + новый образ
-        dockerfile.write('FROM ', recommended_image, '\n')
+        dockerfile.write(f'FROM {recommended_image}\n')
