@@ -2,13 +2,14 @@ import sys
 import preparation
 import debug
 import first_stage
+import copy
 
 
 # Функция primer, вызывает другие функции, в зависимости от параметра
 def primer(instruction):
     return {
         'FROM': first_stage.from_stage,
-        'RUN': None,
+        'RUN': copy.copy_stage,
         'CMD': None,
         'LABEL': None,
         'MAINTAINER': None,

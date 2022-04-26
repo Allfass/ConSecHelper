@@ -78,3 +78,7 @@ def docker_preparation():
     else:
         print('auditd уже установлен')
         auditd()
+    # Прослушивание по умолчанию только unix-сокет
+    subprocess.run(["dockerd", "-H", "\"unix:///var/run/docker.sock\""])
+    # Добавить файл seccomp по-умолчанию
+    subprocess.run(["mv", "default.json", f"/home/{docker_username}"])
