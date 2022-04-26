@@ -1,2 +1,2 @@
 # ConSecHelper
-python script for give recommendation for security setting Docker containers
+python script that increased security of Docker containers
