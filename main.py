@@ -3,28 +3,29 @@ import preparation
 import debug
 import first_stage
 import copy
+import subprocess
 
 
 # Функция primer, вызывает другие функции, в зависимости от параметра
 def primer(instruction):
     return {
         'FROM': first_stage.from_stage,
-        'RUN': copy.copy_stage,
-        'CMD': None,
-        'LABEL': None,
-        'MAINTAINER': None,
-        'EXPOSE': None,
-        'ENV': None,
-        'ADD': None,
-        'COPY': None,
-        'ENTRYPOINT': None,
-        'VOLUME': None,
+        'RUN': None,
+        'CMD': copy.copy_stage,
+        'LABEL': copy.copy_stage,
+        'MAINTAINER': copy.copy_stage,
+        'EXPOSE': copy.copy_stage,
+        'ENV': copy.copy_stage,
+        'ADD': copy.copy_stage,
+        'COPY': copy.copy_stage,
+        'ENTRYPOINT': copy.copy_stage,
+        'VOLUME': copy.copy_stage,
         'USER': None,
-        'WORKDIR': None,
+        'WORKDIR': copy.copy_stage,
         'ARG': None,
         'ONBUILD': None,
         'STOPSIGNAL': None,
-        'HEALTHCHECK': None,
+        'HEALTHCHECK': copy.copy_stage,
         'SHELL': None
     }.get(instruction, 'error')
 
@@ -57,3 +58,8 @@ if __name__ == '__main__':
         print('Ошибка: Не найден файл docker')
     # Закрытие Dockerfile
     new_dockerfile.close()
+    # Сборка образа
+    subprocess.call(["docker", "build", "-t", "test_container", "."])
+    # Запуск контейнера
+    subprocess.call(["docker", "run", "--memory=4G", "--memory-swap=1G", "--security-opt",
+                     "seccomp:default.json", "test_container"])
