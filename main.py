@@ -34,7 +34,7 @@ if __name__ == '__main__':
     preparation.docker_preparation()
     # Этап внесения изменений в конфигурацию Dockerfile
     # Создание нового dockerfile
-    new_dockerfile = open('Dockerfile.new', 'w')
+    new_dockerfile = open('Dockerfile', 'w')
     # Считывание директории с файлом и проверка на наличие аргумента
     path_to_dockerfile = sys.argv[1]
     if debug.DEBUG:

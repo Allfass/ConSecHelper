@@ -2,9 +2,8 @@ import subprocess
 import os
 import debug
 
+
 # Функция для создание файла с настройками работы auditd
-
-
 def audit_config():
     if debug.DEBUG:
         print('[DEBUG]_Внесение изменений в конфигурационный файл auditd')
@@ -80,5 +79,3 @@ def docker_preparation():
         auditd()
     # Прослушивание по умолчанию только unix-сокет
     subprocess.run(["dockerd", "-H", "\"unix:///var/run/docker.sock\""])
-    # Добавить файл seccomp по-умолчанию
-    subprocess.run(["mv", "default.json", f"/home/{docker_username}"])
