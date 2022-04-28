@@ -78,4 +78,18 @@ def docker_preparation():
         print('auditd уже установлен')
         auditd()
     # Прослушивание по умолчанию только unix-сокет
-    subprocess.run(["dockerd", "-H", "\"unix:///var/run/docker.sock\""])
+    subprocess.call(["dockerd", "-H", "\"unix:///var/run/docker.sock\""])
+    # Установка Docker bench security
+    print('Вы хотите установить docker benchmark?')
+    subprocess.call(["git", "clone", "https://github.com/docker/docker-bench-security.git"])
+    subprocess.call(["cd", "docker-bench-security"])
+    docker_bench_report = subprocess.run(["sh", "docker-bench-security.sh"], stdout=subprocess.PIPE, text=True)
+    subprocess.call(["cd", ".."])
+    report_file = open("docker_bench_report", "w")
+    if debug.DEBUG:
+        print("[DEBUG] writing docker benchmark results")
+    report_file.write(docker_bench_report.stdout)
+    if debug.DEBUG:
+        print("[DEBUG] done")
+
+
