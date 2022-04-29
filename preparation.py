@@ -91,5 +91,3 @@ def docker_preparation():
     report_file.write(docker_bench_report.stdout)
     if debug.DEBUG:
         print("[DEBUG] done")
-
-
