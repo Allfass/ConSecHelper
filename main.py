@@ -4,6 +4,7 @@ import debug
 import first_stage
 import copy
 import subprocess
+import onbuild_stage
 
 
 # Функция primer, вызывает другие функции, в зависимости от параметра
@@ -23,7 +24,7 @@ def primer(instruction):
         'USER': None,
         'WORKDIR': copy.copy_stage,
         'ARG': None,
-        'ONBUILD': None,
+        'ONBUILD': onbuild_stage,
         'STOPSIGNAL': None,
         'HEALTHCHECK': copy.copy_stage,
         'SHELL': None
