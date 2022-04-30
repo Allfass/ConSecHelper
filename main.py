@@ -35,7 +35,7 @@ if __name__ == '__main__':
     preparation.docker_preparation()
     # Этап внесения изменений в конфигурацию Dockerfile
     # Создание нового dockerfile
-    new_dockerfile = open('Dockerfile', 'w')
+    new_dockerfile = open('Dockerfile', 'a')
     # Считывание директории с файлом и проверка на наличие аргумента
     path_to_dockerfile = sys.argv[1]
     if debug.DEBUG:
@@ -62,5 +62,5 @@ if __name__ == '__main__':
     # Сборка образа
     subprocess.call(["docker", "build", "-t", "test_container", "."])
     # Запуск контейнера
-    subprocess.call(["docker", "run", "--memory=4G", "--memory-swap=1G", "--security-opt",
+    subprocess.call(["docker", "run", "-u", "docker", "--memory=2G", "--memory-swap=1G", "--security-opt",
                      "seccomp:default.json", "test_container"])
