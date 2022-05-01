@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # Считывание директории с файлом и проверка на наличие аргумента
     path_to_dockerfile = sys.argv[1]
     if debug.DEBUG:
-        print('[DEBUG]', path_to_dockerfile)
+        print('[DEBUG][0.1]', path_to_dockerfile)
     # проверка на наличие первого оператора в файле
     try:
         # Открытие файла для чтения
@@ -58,7 +58,7 @@ if __name__ == '__main__':
             # Работа со строками в dockerfile
             current_line = old_dockerfile.readline()
             if debug.DEBUG:
-                print('[DEBUG]', current_line.strip())
+                print('[DEBUG][0.2]', current_line.strip())
             splited_line = current_line.split(' ')
             docker_instruction = splited_line[0]
             # Вызов Primer, в качестве параметров: список, содержащий команду и её параметр, и новый dockerfile
