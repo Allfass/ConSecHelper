@@ -9,7 +9,7 @@ def from_stage(string, dockerfile):
     docker_image = string[1]
     docker_image = docker_image.replace('\n', '')
     if debug.DEBUG:
-        print('[DEBUG]', docker_image)
+        print('[DEBUG][2.1]', docker_image)
     # Скачивание snyk для linux - инструмент для анализа завимимостей
     subprocess.call(["curl", "https://static.snyk.io/cli/latest/snyk-linux", "-o", "snyk"])
     subprocess.call(["chmod", "+x", "./snyk"])
@@ -39,6 +39,6 @@ def from_stage(string, dockerfile):
         third_buffer = second_buffer[1].split(' ')
         recommended_image = third_buffer[0]
         if debug.DEBUG:
-            print('[DEBUG][recommended_image]_', recommended_image)
+            print('[DEBUG][2.2]_recommended_image-', recommended_image)
         # Запись в новый Dockerfile: FROM + новый образ
         dockerfile.write(f'FROM {recommended_image}\n')
