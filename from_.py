@@ -1,6 +1,7 @@
 import debug
 import subprocess
 import json
+from os import path
 
 
 # Этап проверки образа для инструкции FROM из Dockerfile
@@ -10,8 +11,10 @@ def from_stage(string, dockerfile):
     docker_image = docker_image.replace('\n', '')
     if debug.DEBUG:
         print('[DEBUG][2.1]', docker_image)
-    # Скачивание snyk для linux - инструмент для анализа завимимостей
-    subprocess.call(["curl", "https://static.snyk.io/cli/latest/snyk-linux", "-o", "snyk"])
+    # Проверка наличия snyk
+    if not path.exists("snyk"):
+        # Скачивание snyk для linux - инструмент для анализа завимимостей
+        subprocess.call(["curl", "https://static.snyk.io/cli/latest/snyk-linux", "-o", "snyk"])
     subprocess.call(["chmod", "+x", "./snyk"])
     # Для работы необходима регистрация в snyk
     subprocess.call(["./snyk", "auth"])
