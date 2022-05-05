@@ -1,10 +1,12 @@
 import sys
 import preparation
 import debug
-import first_stage
+import from_
 import copy
 import subprocess
-import onbuild_stage
+import onbuild
+import expose
+import config
 
 
 # Функция primer, вызывает другие функции, в зависимости от параметра
@@ -13,12 +15,12 @@ import onbuild_stage
 # Название модуля соответствует инструкции
 def primer(instruction):
     return {
-        'FROM': first_stage.from_stage,
-        'RUN': None,
+        'FROM': from_.from_stage,
+        'RUN': copy.copy_stage,
         'CMD': copy.copy_stage,
         'LABEL': copy.copy_stage,
         'MAINTAINER': copy.copy_stage,
-        'EXPOSE': copy.copy_stage,
+        'EXPOSE': expose.expose_stage,
         'ENV': copy.copy_stage,
         'ADD': copy.copy_stage,
         'COPY': copy.copy_stage,
@@ -26,8 +28,8 @@ def primer(instruction):
         'VOLUME': copy.copy_stage,
         'USER': None,
         'WORKDIR': copy.copy_stage,
-        'ARG': None,
-        'ONBUILD': onbuild_stage,
+        'ARG': copy.copy_stage,
+        'ONBUILD': onbuild.onbuild_stage,
         'STOPSIGNAL': None,
         'HEALTHCHECK': copy.copy_stage,
         'SHELL': None
@@ -39,7 +41,7 @@ if __name__ == '__main__':
     preparation.docker_preparation()
     # Этап внесения изменений в конфигурацию Dockerfile
     # Создание нового dockerfile
-    new_dockerfile = open('Dockerfile', 'a')
+    new_dockerfile = open('Dockerfile.new', 'a')
     # Считывание директории с файлом и проверка на наличие аргумента
     path_to_dockerfile = sys.argv[1]
     if debug.DEBUG:
@@ -56,19 +58,25 @@ if __name__ == '__main__':
             # переход указателя в начало файла
             old_dockerfile.seek(0)
             # Работа со строками в dockerfile
-            current_line = old_dockerfile.readline()
-            if debug.DEBUG:
-                print('[DEBUG][0.2]', current_line.strip())
-            splited_line = current_line.split(' ')
-            docker_instruction = splited_line[0]
-            # Вызов Primer, в качестве параметров: список, содержащий команду и её параметр, и новый dockerfile
-            primer(docker_instruction)(splited_line, new_dockerfile)
+            for current_line in old_dockerfile:
+                if debug.DEBUG:
+                    print('[DEBUG][0.2]', current_line.strip())
+                splited_line = current_line.split(' ')
+                docker_instruction = splited_line[0]
+                # Вызов Primer, в качестве параметров: список, содержащий команду и её параметр, и новый dockerfile
+                primer(docker_instruction)(splited_line, new_dockerfile)
     except FileNotFoundError:
         print('Ошибка: Не найден файл docker')
     # Закрытие Dockerfile
     new_dockerfile.close()
+    # Переименование текущего файла в Dockerfile.old, нового файла в Dockerfile
+    subprocess.call(["mv", "Dockerfile", "Dockerfile.old"])
+    subprocess.call(["mv", "Dockerfile.new", "Dockerfile"])
     # Сборка образа
     subprocess.call(["docker", "build", "-t", "test_container", "."])
+    expose_string = expose.concate_exposes(config.EXPOSE_PARAMETER)
+    if debug.DEBUG:
+        print('[DEBUG][0.2]_expose_list=', expose_string)
     # Запуск контейнера
-    subprocess.call(["docker", "run", "-u", "docker", "--memory=2G", "--memory-swap=1G", "--security-opt",
+    subprocess.call(["docker", "run", "-u", "docker", expose_string, "--memory=2G", "--memory-swap=1G", "--security-opt",
                      "seccomp:default.json", "test_container"])

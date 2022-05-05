@@ -93,8 +93,6 @@ def docker_preparation():
         if debug.DEBUG:
             print('[DEBUG][1.8]_Вызов_auditd()')
         auditd()
-    # Прослушивание по умолчанию только unix-сокет
-    subprocess.call(["dockerd", "-H", "unix:///var/run/docker.sock"])
     # Установка Docker bench security
     choice_username = input('Вы хотите установить docker benchmark(Y/N)?')
     if choice_username[0] == 'Y' or choice_username[0] == 'y':
