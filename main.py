@@ -26,13 +26,13 @@ def primer(instruction):
         'COPY': copy.copy_stage,
         'ENTRYPOINT': copy.copy_stage,
         'VOLUME': copy.copy_stage,
-        'USER': None,
+        'USER': copy.copy_stage,
         'WORKDIR': copy.copy_stage,
         'ARG': copy.copy_stage,
         'ONBUILD': onbuild.onbuild_stage,
-        'STOPSIGNAL': None,
+        'STOPSIGNAL': copy.copy_stage,
         'HEALTHCHECK': copy.copy_stage,
-        'SHELL': None
+        'SHELL': copy.copy_stage
     }.get(instruction, 'error')
 
 
