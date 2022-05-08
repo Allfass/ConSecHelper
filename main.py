@@ -77,6 +77,14 @@ if __name__ == '__main__':
     expose_string = expose.concate_exposes(config.EXPOSE_PARAMETER)
     if debug.DEBUG:
         print('[DEBUG][0.2]_expose_list=', expose_string)
-    # Запуск контейнера
-    subprocess.call(["docker", "run", "-u", "docker", expose_string, "--memory=2G", "--memory-swap=1G", "--security-opt",
-                     "seccomp:default.json", "test_container"])
+    # Проверка наличия агументов expose
+    if config.EXPOSE_PARAMETER:
+        if debug.DEBUG:
+            print('[DEBUG][0.3]_Сработало_условие_EXPOSE_PARAMETER_содержит_элементы')
+        # Запуск контейнера с открытыми портами
+        subprocess.call(["docker", "run", "-u", "docker", expose_string, "--memory=2G", "--memory-swap=1G",
+                         "--security-opt", "seccomp:default.json", "test_container"])
+    else:
+        # Запуск контейнера
+        subprocess.call(["docker", "run", "-u", "docker", "--memory=2G", "--memory-swap=1G",
+                         "--security-opt", "seccomp:default.json", "test_container"])
