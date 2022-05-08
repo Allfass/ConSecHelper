@@ -7,6 +7,7 @@ import subprocess
 import onbuild
 import expose
 import config
+from run import run_stage # переписать импорты, добавить инструкции
 
 
 # Функция primer, вызывает другие функции, в зависимости от параметра
@@ -16,7 +17,7 @@ import config
 def primer(instruction):
     return {
         'FROM': from_.from_stage,
-        'RUN': copy.copy_stage,
+        'RUN': run_stage,
         'CMD': copy.copy_stage,
         'LABEL': copy.copy_stage,
         'MAINTAINER': copy.copy_stage,
