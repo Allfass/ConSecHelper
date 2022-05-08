@@ -15,4 +15,4 @@ def onbuild_stage(string, dockerfile):
         dockerfile.write(string[0] + " RUN useradd -r -g docker docker\n")
         dockerfile.write(string[0] + " USER docker\n")
     if debug.DEBUG:
-        print('[DEBUG][4.2]_Выход_из_onbuild_stage')
+        print('[DEBUG][4.3]_Выход_из_onbuild_stage')
