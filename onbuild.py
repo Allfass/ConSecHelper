@@ -9,7 +9,10 @@ def onbuild_stage(string, dockerfile):
     config.ONBUILD_COUNT += 1
     # Копирование текущей инструкции
     copy.copy_stage(string, dockerfile)
-    if "useradd" not in string[1]:
+    # проверка на наличие инструкции
+    if "useradd" not in string[1]: # требуется переработка
+        if debug.DEBUG:
+            print('[DEBUG][4.2]_Сработало_условие_useradd_не_в_списке_аргументов')
         # Добавляем непревилигированного пользователя docker
         dockerfile.write(string[0] + " RUN groupadd -r docker\n")
         dockerfile.write(string[0] + " RUN useradd -r -g docker docker\n")
