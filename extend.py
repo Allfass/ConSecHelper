@@ -1,6 +1,4 @@
 import debug
-import copy
-import config
 
 
 def onbuild_stage(string, dockerfile):

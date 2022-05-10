@@ -7,7 +7,6 @@ import subprocess
 import onbuild
 import expose
 import config
-from run import run_stage # переписать импорты, добавить инструкции
 
 
 # Функция primer, вызывает другие функции, в зависимости от параметра
