@@ -13,28 +13,28 @@ def expose_stage(string, dockerfile):
     for element in range(len(split_string)):
         new_string = split_string[element].replace('\n', '')
         if debug.DEBUG:
-            print('[DEBUG][5.3]_Строка_без_спецсимволов_', new_string)
+            print('[DEBUG][5.2]_Строка_без_спецсимволов_', new_string)
         split_string[element] = new_string
     string[1] = string[1].replace('\n', '')
     config.EXPOSE_PARAMETER.append(split_string[0]+':'+string[1])
     if debug.DEBUG:
-        print('[DEBUG][5.4]_глобальная_переменная_EXPOSE_PARAMETR=', config.EXPOSE_PARAMETER)
+        print('[DEBUG][5.3]_глобальная_переменная_EXPOSE_PARAMETR=', config.EXPOSE_PARAMETER)
     copy.copy_stage(string, dockerfile)
     if debug.DEBUG:
-        print('[DEBUG][5.5]_Выход_expose_stage')
+        print('[DEBUG][5.4]_Выход_expose_stage')
 
 
 # Преобразует список в строку
 def concate_exposes(expose_list):
     if debug.DEBUG:
-        print('[DEBUG][5.6]_Вызов_concate_exposes')
+        print('[DEBUG][5.5]_Вызов_concate_exposes')
     command_string = ''
     for element in expose_list:
         command_string += '-p ' + element + ' '
     if debug.DEBUG:
-        print('[DEBUG][5.7]_Результат_конкатенации_', command_string)
+        print('[DEBUG][5.6]_Результат_конкатенации_', command_string)
     if debug.DEBUG:
-        print('[DEBUG][5.8]_Выход_concate_exposes')
+        print('[DEBUG][5.7]_Выход_concate_exposes')
     return command_string
 
 
