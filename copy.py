@@ -1,5 +1,4 @@
 import debug
-import expose
 
 
 # Функция копирует инструкцию в новый dockerfile
