@@ -1,10 +1,10 @@
 import sys
 import preparation
 import debug
-import from_
-import copy
+from from_ import from_stage
+from copy import copy_stage
 import subprocess
-import onbuild
+from extend import final_stage
 import expose
 import config
 
