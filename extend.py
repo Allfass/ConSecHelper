@@ -1,7 +1,7 @@
 import debug
 
 
-def onbuild_stage(string, dockerfile):
+def final_stage(dockerfile):
     if debug.DEBUG:
         print('[DEBUG][4.1]_Вызов_onbuild_stage')
     # проверка на наличие инструкции
