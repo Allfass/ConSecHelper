@@ -32,6 +32,8 @@ def audit_config():
 
 # Внесение правил для аудита доступа к конфигурационным файлам Docker
 def auditd():
+    if debug.DEBUG:
+        print('[DEBUG][1.8.1]_Внесение изменений в конфигурационный файл auditd')
     print('Внесение изменений в конфигурационный файл auditd')
     # Проверка наличия директории для файла настроек
     if os.path.exists('/etc/audit/rules.d/'):
@@ -45,9 +47,13 @@ def auditd():
         subprocess.call(["mkdir", "-p", "/etc/audit/rules.d/"])
         os.chdir('/etc/audit/rules.d/')
         audit_config()
+    if debug.DEBUG:
+        print('[DEBUG][1.11.4]_Внесение изменений в конфигурационный файл auditd')
 
 
 def docker_preparation():
+    if debug.DEBUG:
+        print('[DEBUG][1.1]_Вызов_docker_preparation')
     # Этап подготовки хоста к генерации файла
     # Создание/получение имени нового пользователя
     while True:
