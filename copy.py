@@ -9,9 +9,10 @@ def copy_stage(string, dockerfile):
     copy_string = ''
     for element in string:
         copy_string += element + ' '
-    copy_string += '\n'
+    strip_string = copy_string.strip()
+    strip_string += '\n'
     if debug.DEBUG:
-        print('[DEBUG][3.2]_Копируемая_строка_', copy_string)
-    dockerfile.write(copy_string)
+        print('[DEBUG][3.2]_Копируемая_строка_', strip_string)
+    dockerfile.write(strip_string)
     if debug.DEBUG:
         print('[DEBUG][3.3]_Выход_из_copy_stage')

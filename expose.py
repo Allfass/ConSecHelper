@@ -30,7 +30,7 @@ def concate_exposes(expose_list):
         print('[DEBUG][5.6]_Вызов_concate_exposes')
     command_string = ''
     for element in expose_list:
-        command_string = '-p ' + element + ' '
+        command_string += '-p ' + element + ' '
     if debug.DEBUG:
         print('[DEBUG][5.7]_Результат_конкатенации_', command_string)
     if debug.DEBUG:

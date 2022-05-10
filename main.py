@@ -15,24 +15,24 @@ import config
 # Название модуля соответствует инструкции
 def primer(instruction):
     return {
-        'FROM': from_.from_stage,
-        'RUN': run_stage,
-        'CMD': copy.copy_stage,
-        'LABEL': copy.copy_stage,
-        'MAINTAINER': copy.copy_stage,
+        'FROM': from_stage,
+        'RUN': copy_stage,
+        'CMD': copy_stage,
+        'LABEL': copy_stage,
+        'MAINTAINER': copy_stage,
         'EXPOSE': expose.expose_stage,
-        'ENV': copy.copy_stage,
-        'ADD': copy.copy_stage,
-        'COPY': copy.copy_stage,
-        'ENTRYPOINT': copy.copy_stage,
-        'VOLUME': copy.copy_stage,
-        'USER': copy.copy_stage,
-        'WORKDIR': copy.copy_stage,
-        'ARG': copy.copy_stage,
-        'ONBUILD': onbuild.onbuild_stage,
-        'STOPSIGNAL': copy.copy_stage,
-        'HEALTHCHECK': copy.copy_stage,
-        'SHELL': copy.copy_stage
+        'ENV': copy_stage,
+        'ADD': copy_stage,
+        'COPY': copy_stage,
+        'ENTRYPOINT': copy_stage,
+        'VOLUME': copy_stage,
+        'USER': copy_stage,
+        'WORKDIR': copy_stage,
+        'ARG': copy_stage,
+        'ONBUILD': copy_stage,
+        'STOPSIGNAL': copy_stage,
+        'HEALTHCHECK': copy_stage,
+        'SHELL': copy_stage
     }.get(instruction, 'error')
 
 
@@ -67,6 +67,8 @@ if __name__ == '__main__':
                 primer(docker_instruction)(splited_line, new_dockerfile)
     except FileNotFoundError:
         print('Ошибка: Не найден файл docker')
+    # Последний этап внесения изменений в dockerfile
+    final_stage(new_dockerfile)
     # Закрытие Dockerfile
     new_dockerfile.close()
     # Переименование текущего файла в Dockerfile.old, нового файла в Dockerfile
@@ -82,9 +84,12 @@ if __name__ == '__main__':
         if debug.DEBUG:
             print('[DEBUG][0.3]_Сработало_условие_EXPOSE_PARAMETER_содержит_элементы')
         # Запуск контейнера с открытыми портами
-        subprocess.call(["docker", "run", "-u", "docker", expose_string, "--memory=2G", "--memory-swap=1G",
-                         "--security-opt", "seccomp:default.json", "test_container"])
+        cmd = 'docker run ' + expose_string + ' --memory=1G --memory-swap=2G --security-opt seccomp:default.json' \
+                                              ' test_container:latest'
+        if debug.DEBUG:
+            print('[DEBUG][0.4]_command_to_run_container=', cmd)
+        subprocess.call(cmd, shell=True)
     else:
         # Запуск контейнера
-        subprocess.call(["docker", "run", "-u", "docker", "--memory=2G", "--memory-swap=1G",
-                         "--security-opt", "seccomp:default.json", "test_container"])
+        subprocess.call(["docker", "run", "--memory=1G", "--memory-swap=2G",
+                         "--security-opt", "seccomp:default.json", "test_container:latest"])
