@@ -60,7 +60,7 @@ if __name__ == '__main__':
             # Работа со строками в dockerfile
             for current_line in old_dockerfile:
                 if debug.DEBUG:
-                    print('[DEBUG][0.2]', current_line.strip())
+                    print('[DEBUG][0.2]_Текущая_инструкция_для_обработки=', current_line.strip())
                 splited_line = current_line.split(' ')
                 docker_instruction = splited_line[0]
                 # Вызов Primer, в качестве параметров: список, содержащий команду и её параметр, и новый dockerfile
