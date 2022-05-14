@@ -54,6 +54,16 @@ def auditd():
 def docker_preparation():
     if debug.DEBUG:
         print('[DEBUG][1.1]_Вызов_docker_preparation')
+    # Остановка всех запущенных контейнеров
+    cmd = 'docker stop $(docker ps -a -q)'
+    echo = subprocess.Popen(cmd, shell=True)
+    # Ожидание окончания работы команды
+    echo.wait()
+    if debug.DEBUG:
+        if echo.returncode == 0:
+            print('[DEBUG][1.2]_Остановка_запущенных_процессов_завершилась_с_кодом_0')
+        else:
+            print('[DEBUG][1.2]_Остановка_запущенных_процессов_завершилась_с_кодом_', echo.returncode)
     # Этап подготовки хоста к генерации файла
     # Создание/получение имени нового пользователя
     while True:
