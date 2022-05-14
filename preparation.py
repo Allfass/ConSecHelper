@@ -43,12 +43,12 @@ def auditd():
         audit_config()
     else:
         if debug.DEBUG:
-            print('[DEBUG][1.10.3]_Сработало_вхождение_путь_к_rules.d_не_существует')
+            print('[DEBUG][1.9.3]_Сработало_вхождение_путь_к_rules.d_не_существует')
         subprocess.call(["mkdir", "-p", "/etc/audit/rules.d/"])
         os.chdir('/etc/audit/rules.d/')
         audit_config()
     if debug.DEBUG:
-        print('[DEBUG][1.11.4]_Внесение изменений в конфигурационный файл auditd')
+        print('[DEBUG][1.10.4]_Внесение изменений в конфигурационный файл auditd')
 
 
 def docker_preparation():
@@ -60,15 +60,15 @@ def docker_preparation():
         choice_username = input('Вы хотите создать нового пользователя, для взаимодействия с контейнерами(Yes/No)?:')
         if choice_username[0] == 'Y' or choice_username[0] == 'y':
             if debug.DEBUG:
-                print('[DEBUG][1.2]_Сработало_вхождение_путь_к_rules.d_существует')
+                print('[DEBUG][1.3]_Сработало_вхождение_путь_к_rules.d_существует')
             docker_username = input('Введите имя пользователя docker?:')
             subprocess.call(["useradd", "-c", docker_username, "-m", "-c", "/bin/bash", docker_username])
             if debug.DEBUG:
-                print('[DEBUG][1.3]_Создан_пользователь_', docker_username)
+                print('[DEBUG][1.4]_Создан_пользователь_', docker_username)
             subprocess.call(["usermod", "-aG", "sudo", docker_username])
             subprocess.call(["usermod", "-aG", "docker", docker_username])
             if debug.DEBUG:
-                print('[DEBUG][1.4]_Пользователь_', docker_username, '_внесен_в_группы_sudo_docker')
+                print('[DEBUG][1.5]_Пользователь_', docker_username, '_внесен_в_группы_sudo_docker')
             break
         else:
             docker_username = input('Введите имя существующего пользователя, который будет работать с контейнерами:')
@@ -76,11 +76,11 @@ def docker_preparation():
             user_list_call = subprocess.run(["cut", "-d:", "-f1", "/etc/passwd"], stdout=subprocess.PIPE, text=True)
             if user_list_call.stdout.find(docker_username) >= 0:
                 if debug.DEBUG:
-                    print('[DEBUG][1.5] - Сработало условие, пользователь существует в списке пользователей')
+                    print('[DEBUG][1.3] - Сработало условие, пользователь существует в списке пользователей')
                 subprocess.call(["usermod", "-aG", "sudo", docker_username])
                 subprocess.call(["usermod", "-aG", "docker", docker_username])
                 if debug.DEBUG:
-                    print('[DEBUG][1.6]_Пользователь_', docker_username, '_внесен_в_группы_sudo_docker')
+                    print('[DEBUG][1.4]_Пользователь_', docker_username, '_внесен_в_группы_sudo_docker')
                 break
     # установка и конфигурация auditd
     call = subprocess.run(["dpkg", "-l"], stdout=subprocess.PIPE, text=True)
@@ -88,31 +88,31 @@ def docker_preparation():
         user_choice = input('Вы хотите использовать auditd для контроля вызовов(Да/Нет)?')
         if user_choice[0] == 'Y' or user_choice[0] == 'y':
             if debug.DEBUG:
-                print('[DEBUG][1.7]_Сработало_вхождение_Установка_auditd')
+                print('[DEBUG][1.6]_Сработало_вхождение_Установка_auditd')
             subprocess.call(["apt", "update"])
             subprocess.call(["apt", "install", "auditd", "-y"])
             if debug.DEBUG:
-                print('[DEBUG][1.8]_Вызов_auditd()')
+                print('[DEBUG][1.7]_Вызов_auditd()')
             auditd()
     else:
         print('auditd уже установлен')
         if debug.DEBUG:
-            print('[DEBUG][1.9]_Вызов_auditd()')
+            print('[DEBUG][1.6]_Вызов_auditd()')
         auditd()
     # Установка Docker bench security
     choice_username = input('Вы хотите установить docker benchmark(Y/N)?')
     if choice_username[0] == 'Y' or choice_username[0] == 'y':
         if debug.DEBUG:
-            print('[DEBUG][1.10]_Сработало_вхождение_начата_скачивание_docker_bench')
+            print('[DEBUG][1.7]_Сработало_вхождение_начата_скачивание_docker_bench')
         subprocess.call(["git", "clone", "https://github.com/docker/docker-bench-security.git"])
         subprocess.call(["cd", "docker-bench-security"])
         docker_bench_report = subprocess.run(["sh", "docker-bench-security.sh"], stdout=subprocess.PIPE, text=True)
         subprocess.call(["cd", ".."])
         report_file = open("docker_bench_report", "w")
         if debug.DEBUG:
-            print("[DEBUG][1.11]_Запись_результатов_в_docker_bench_report")
+            print("[DEBUG][1.8]_Запись_результатов_в_docker_bench_report")
         report_file.write(docker_bench_report.stdout)
         if debug.DEBUG:
-            print("[DEBUG][1.12]_Запись_результатов_завершена")
+            print("[DEBUG][1.9]_Запись_результатов_завершена")
     if debug.DEBUG:
-        print('[DEBUG][1.13]_Выход_docker_preparation')
+        print('[DEBUG][1.10]_Выход_docker_preparation')

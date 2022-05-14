@@ -78,16 +78,16 @@ if __name__ == '__main__':
     subprocess.call(["docker", "build", "-t", "test_container", "."])
     expose_string = expose.concate_exposes(config.EXPOSE_PARAMETER)
     if debug.DEBUG:
-        print('[DEBUG][0.2]_expose_list=', expose_string)
+        print('[DEBUG][0.3]_expose_list=', expose_string)
     # Проверка наличия агументов expose
     if config.EXPOSE_PARAMETER:
         if debug.DEBUG:
-            print('[DEBUG][0.3]_Сработало_условие_EXPOSE_PARAMETER_содержит_элементы')
+            print('[DEBUG][0.4]_Сработало_условие_EXPOSE_PARAMETER_содержит_элементы')
         # Запуск контейнера с открытыми портами
         cmd = 'docker run ' + expose_string + ' --memory=1G --memory-swap=2G --security-opt seccomp:default.json' \
                                               ' test_container:latest'
         if debug.DEBUG:
-            print('[DEBUG][0.4]_command_to_run_container=', cmd)
+            print('[DEBUG][0.5]_command_to_run_container=', cmd)
         subprocess.call(cmd, shell=True)
     else:
         # Запуск контейнера
