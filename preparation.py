@@ -70,7 +70,7 @@ def docker_preparation():
         choice_username = input('Вы хотите создать нового пользователя, для взаимодействия с контейнерами(Yes/No)?:')
         if choice_username[0] == 'Y' or choice_username[0] == 'y':
             if debug.DEBUG:
-                print('[DEBUG][1.3]_Сработало_вхождение_путь_к_rules.d_существует')
+                print('[DEBUG][1.3]_Сработало_вхождение_создание_нового_пользователя')
             docker_username = input('Введите имя пользователя docker?:')
             subprocess.call(["useradd", "-c", docker_username, "-m", "-c", "/bin/bash", docker_username])
             if debug.DEBUG:
